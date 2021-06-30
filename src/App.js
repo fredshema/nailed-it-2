@@ -1,25 +1,31 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import Header from "./components/ui/Header";
+import Search from "./components/ui/Search";
+import ImagesGrid from "./components/images/ImagesGrid";
 
-function App() {
+import "./App.css";
+
+const App = () => {
+  const [images, setImages] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const fetchImages = async (albumId) => {
+    setIsLoading(true);
+    const response = await fetch(
+      `https://jsonplaceholder.typicode.com/albums/${albumId}/photos`
+    );
+    const images = await response.json();
+    setImages(images);
+    setIsLoading(false);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="container">
+      <Header />
+      <Search getAlbumImages={(id) => fetchImages(id)} />
+      <ImagesGrid isLoading={isLoading} images={images} />
     </div>
   );
-}
+};
 
 export default App;
